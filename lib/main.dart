@@ -8,9 +8,9 @@ import 'theme/app_colors.dart';
 /// Satu-satunya entry point aplikasi KosAsih.
 ///
 /// Dulu Login dan Register masing-masing punya `void main()` sendiri sehingga
-/// hanya bisa dijalankan salah satu. Sekarang keduanya didaftarkan sebagai
-/// route di satu [MaterialApp], jadi satu aplikasi punya dua halaman yang
-/// saling terhubung.
+/// hanya bisa dijalankan salah satu. Sekarang Login, Register, dan Dashboard
+/// didaftarkan sebagai route di satu [MaterialApp], jadi satu aplikasi punya
+/// satu alur halaman yang saling terhubung.
 void main() => runApp(const KosAsihApp());
 
 class KosAsihApp extends StatelessWidget {
