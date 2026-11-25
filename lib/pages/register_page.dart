@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
-import '../widgets/app_text_field.dart';
-import '../widgets/app_text_link.dart';
+import '../core/theme/app_colors.dart';
+import '../core/widgets/app_text_field.dart';
+import '../core/widgets/app_text_link.dart';
 import 'login_page.dart';
 
 /// Halaman Daftar Akun Baru KosAsih.

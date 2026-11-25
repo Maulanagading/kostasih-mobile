@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'pages/dashboard_pemilik_page.dart';
 import 'pages/login_page.dart';
 import 'pages/register_page.dart';
-import 'theme/app_colors.dart';
+import 'core/theme/app_colors.dart';
 
 /// Satu-satunya entry point aplikasi KosAsih.
 ///
