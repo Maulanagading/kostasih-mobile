@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../widgets/app_text_field.dart';
 import '../widgets/app_text_link.dart';
+import 'dashboard_pemilik_page.dart';
 import 'register_page.dart';
 
 /// Halaman Login KosAsih.
@@ -40,7 +41,9 @@ class _LoginKosAsihPageState extends State<LoginKosAsihPage> {
     }
 
     // TODO: ganti dengan proses autentikasi (API / Firebase) saat sudah ada.
+    // Sementara semua login diarahkan ke dashboard pemilik (data masih dummy).
     _showSnackBar('Login berhasil sebagai $email.');
+    Navigator.of(context).pushNamed(DashboardPemilikPage.routeName);
   }
 
   /// Pindah ke halaman Daftar Akun.

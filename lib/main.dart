@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'pages/dashboard_pemilik_page.dart';
 import 'pages/login_page.dart';
 import 'pages/register_page.dart';
 import 'theme/app_colors.dart';
@@ -31,6 +32,7 @@ class KosAsihApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         LoginKosAsihPage.routeName: (_) => const LoginKosAsihPage(),
         RegisterKosAsihPage.routeName: (_) => const RegisterKosAsihPage(),
+        DashboardPemilikPage.routeName: (_) => const DashboardPemilikPage(),
       },
     );
   }
