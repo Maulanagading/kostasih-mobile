@@ -1,6 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+import 'blocs/auth/auth_bloc.dart';
+import 'blocs/auth/auth_event.dart';
+import 'core/constants/app_routes.dart';
+import 'core/theme/app_colors.dart';
+import 'pages/auth_gate.dart';
+import 'pages/dashboard_pemilik_page.dart';
+import 'pages/dashboard_penghuni_page.dart';
+import 'pages/login_page.dart';
+import 'pages/register_page.dart';
+import 'repositories/auth_repository.dart';
+
+/// Satu-satunya entry point aplikasi KosAsih.
+///
+/// Alur halaman ditentukan oleh [AuthGate] berdasarkan status autentikasi dan
+/// `role_user`, sehingga Login, Register, dan kedua dashboard berada dalam satu
+/// [MaterialApp].
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // `.env` hanya berisi konfigurasi non-rahasia (mis. API_BASE_URL).
+  // Bila file belum ada, aplikasi tetap boleh jalan memakai nilai default.
+  try {
+    await dotenv.load();
+  } catch (_) {
+    // Diabaikan: .env belum dibuat (lihat .env.example).
+  }
+
   runApp(const KosAsihApp());
 }
 
@@ -9,140 +37,33 @@ class KosAsihApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'KosAsih',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF176B87),
-          brightness: Brightness.light,
+    return MultiBlocProvider(
+      providers: <BlocProvider<dynamic>>[
+        BlocProvider<AuthBloc>(
+          create: (_) =>
+              AuthBloc(repository: DummyAuthRepository())..add(const AuthStarted()),
         ),
-        useMaterial3: true,
-      ),
-      home: const KosAsihHomePage(),
-    );
-  }
-}
-
-class KosAsihHomePage extends StatelessWidget {
-  const KosAsihHomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('KosAsih'),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            tooltip: 'Notifikasi',
-            icon: const Icon(Icons.notifications_none),
-          ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          Text(
-            'Selamat datang di KosAsih',
-            style: Theme.of(context).textTheme.headlineSmall
-                ?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Kelola indekos lebih mudah, rapi, dan terintegrasi.',
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          const SizedBox(height: 24),
-          Card(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            child: const Padding(
-              padding: EdgeInsets.all(20),
-              child: Row(
-                children: [
-                  Icon(Icons.home_work_outlined, size: 42),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Ringkasan Kos',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 8),
-                        Text('Pantau hunian, penghuni, dan keuangan Anda.'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Menu utama',
-            style: Theme.of(context).textTheme.titleLarge
-                ?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 12),
-          const _FeatureTile(
-            icon: Icons.meeting_room_outlined,
-            title: 'Data Kamar',
-            subtitle: 'Kelola ketersediaan dan detail kamar',
-          ),
-          const _FeatureTile(
-            icon: Icons.people_outline,
-            title: 'Data Penghuni',
-            subtitle: 'Catat dan pantau informasi penghuni',
-          ),
-          const _FeatureTile(
-            icon: Icons.account_balance_wallet_outlined,
-            title: 'Keuangan',
-            subtitle: 'Kelola pembayaran dan laporan keuangan',
-          ),
-        ],
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: 0,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            label: 'Beranda',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.analytics_outlined),
-            label: 'Laporan',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            label: 'Profil',
-          ),
-        ],
+      ],
+      child: MaterialApp(
+        title: 'KosAsih',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
+          scaffoldBackgroundColor: Colors.white,
+        ),
+        // Halaman pertama ditentukan oleh status login & role pengguna.
+        home: const AuthGate(),
+        // Route tambahan agar halaman tetap bisa dituju lewat
+        // Navigator.pushNamed(...) seperti sebelumnya.
+        routes: <String, WidgetBuilder>{
+          AppRoutes.login: (_) => const LoginKosAsihPage(),
+          AppRoutes.register: (_) => const RegisterKosAsihPage(),
+          AppRoutes.dashboardPemilik: (_) => const DashboardPemilikPage(),
+          AppRoutes.dashboardPenghuni: (_) => const DashboardPenghuniPage(),
+        },
       ),
     );
   }
 }
 
-class _FeatureTile extends StatelessWidget {
-  const _FeatureTile({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: CircleAvatar(child: Icon(icon)),
-        title: Text(title),
-        subtitle: Text(subtitle),
-        trailing: const Icon(Icons.chevron_right),
-      ),
-    );
-  }
-}
