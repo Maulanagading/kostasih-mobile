@@ -35,6 +35,27 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  # === State management (wajib: Event -> Bloc -> State, lihat kontrak tim) ===
+  flutter_bloc: ^9.1.1
+  equatable: ^3.0.0
+
+  # === Format mata uang (Rupiah) dan tanggal (WIB) ===
+  intl: ^0.20.3
+
+  # === Networking untuk lapisan Repository ===
+  dio: ^5.11.1
+
+  # === Konfigurasi non-rahasia (API base URL) ===
+  flutter_dotenv: ^6.0.2
+
+  # === Penyimpanan sesi login di perangkat ===
+  shared_preferences: ^2.5.6
+
+  # === Unggah bukti pembayaran & cetak E-Kuitansi PDF ===
+  image_picker: ^1.2.4
+  pdf: ^3.13.1
+  printing: ^5.15.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -57,10 +78,10 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  # `.env` berisi konfigurasi non-rahasia (mis. API_BASE_URL).
+  # Nilai rahasia/kredensial Firebase TIDAK boleh masuk sini.
+  assets:
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
